@@ -2,7 +2,7 @@
 
 Tired of ordering food through Wolt™ and then manually paying the group host with Paybox™?
 
-No more!
+No more! See this video:
 
 [![Video](http://img.youtube.com/vi/qZAR7HbG6Ls/0.jpg)](http://www.youtube.com/watch?v=qZAR7HbG6Ls "Wolt Pay - demonstration")
 
