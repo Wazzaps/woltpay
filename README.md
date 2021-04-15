@@ -8,6 +8,6 @@ No more!
 
 Due to Play store policies regarding use of the Accessibility API, I cannot publish the app there.
 
-Here's a pre-buit APK for your convenience: [Download](https://github.com/Wazzaps/karaoke/releases/latest).
+Here's a pre-buit APK for your convenience: [Download](https://github.com/Wazzaps/woltpay/releases/latest).
 
 **Make your both your Wolt and Paybox are set to English.**
