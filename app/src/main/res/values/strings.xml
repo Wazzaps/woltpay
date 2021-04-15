@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Wolt Pay</string>
+    <string name="action_settings">Settings</string>
+    <string name="clear_contact_map">Forget contact names</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+
+    <string name="accessibility_service_description">Automatic Wolt to Paybox bot</string>
+    <string name="channel_description">Notifies about detected payments</string>
+    <string name="channel_name">WoltPay Notification</string>
+    <string name="open_accessibility_menu">Open accessibility menu</string>
+    <string name="accessibility_guide">In order for the app to work, please set WoltPay as an accessibility service. Do this by clicking here:</string>
+    <string name="accessibility_guide2">Then just use Wolt normally and whenever you view a receipt a notification offering to pay will come up.</string>
+    <string name="accessibility_title">Setup</string>
+    <string name="reset_contacts_map_guide">If you want to forget all learned mappings between Wolt names and Paybox names, press this button:</string>
+    <string name="reset_contacts_map_title">Reset</string>
+</resources>
