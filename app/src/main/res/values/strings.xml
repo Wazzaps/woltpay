@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Wolt Pay</string>
+    <string name="app_name" translatable="false">Wolt Pay</string>
     <string name="action_settings">Settings</string>
     <string name="clear_contact_map">Forget contact names</string>
     <!-- Strings used for fragments for navigation -->
@@ -20,4 +20,6 @@
     <string name="accessibility_title">Setup</string>
     <string name="reset_contacts_map_guide">If you want to forget all learned mappings between Wolt names and Paybox names, press this button:</string>
     <string name="reset_contacts_map_title">Reset</string>
+    <string name="your_share">Your share in</string>
+    <string name="host_tag">HOST</string>
 </resources>

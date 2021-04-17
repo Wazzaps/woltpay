@@ -184,17 +184,17 @@ class MyAccessibilityService : AccessibilityService() {
             try {
                 when (event.packageName) {
                     "com.wolt.android" -> {
-                        val text = event.source.findAccessibilityNodeInfosByText("Your share in").firstOrNull() ?: return
+                        val text = event.source.findAccessibilityNodeInfosByText(getString(R.string.your_share)).firstOrNull() ?: return
 
                         val amount = {
                             val p = text.parent
-                            p.getChild(p.childCount - 1).text.toString()
+                            p.getChild(p.childCount - 1).text.toString().replace("\u200F", "")  // remove RTL mark
                         }()
 
                         fun getHostname(): String? {
                             return text.parent.parent.children
                                     .firstOrNull {
-                                        it.className.toString() == "android.view.ViewGroup" && it.childCount == 3 && it.getChild(1).text.toString() == "HOST"
+                                        it.className.toString() == "android.view.ViewGroup" && it.childCount == 3 && it.getChild(1).text.toString() == getString(R.string.host_tag)
                                     }?.getChild(0)?.text?.toString()
                         }
 
