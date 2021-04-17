@@ -10,4 +10,4 @@ Due to Play store policies regarding use of the Accessibility API, I cannot publ
 
 Here's a pre-buit APK for your convenience: [Download](https://github.com/Wazzaps/woltpay/releases/latest).
 
-**Make sure both your Wolt and Paybox are set to English.**
+**Make sure your Paybox is set to English.**
