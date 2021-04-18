@@ -161,6 +161,12 @@ val AccessibilityNodeInfo.children: Sequence<AccessibilityNodeInfo>
         }
     }
 
+private fun getPayboxItem(event: AccessibilityEvent, strings: Array<String>, getter: (AccessibilityEvent, String) -> AccessibilityNodeInfo?) : AccessibilityNodeInfo? {
+    return strings.mapNotNull {
+        getter(event, it)
+    }.firstOrNull()
+}
+
 class MyAccessibilityService : AccessibilityService() {
 
     var contactMap: SharedPreferences? = null
@@ -184,17 +190,17 @@ class MyAccessibilityService : AccessibilityService() {
             try {
                 when (event.packageName) {
                     "com.wolt.android" -> {
-                        val text = event.source.findAccessibilityNodeInfosByText("Your share in").firstOrNull() ?: return
+                        val text = event.source.findAccessibilityNodeInfosByText(getString(R.string.your_share)).firstOrNull() ?: return
 
                         val amount = {
                             val p = text.parent
-                            p.getChild(p.childCount - 1).text.toString()
+                            p.getChild(p.childCount - 1).text.toString().replace("\u200F", "")  // remove RTL mark
                         }()
 
                         fun getHostname(): String? {
                             return text.parent.parent.children
                                     .firstOrNull {
-                                        it.className.toString() == "android.view.ViewGroup" && it.childCount == 3 && it.getChild(1).text.toString() == "HOST"
+                                        it.className.toString() == "android.view.ViewGroup" && it.childCount == 3 && it.getChild(1).text.toString() == getString(R.string.host_tag)
                                     }?.getChild(0)?.text?.toString()
                         }
 
@@ -207,9 +213,8 @@ class MyAccessibilityService : AccessibilityService() {
                         val payInfo = g_payInfo ?: return
                         when (payInfo.stage) {
                             PayStage.WAITING_FOR_PAYBOX -> {
-                                val button = (event.source ?: return)
-                                        .findAccessibilityNodeInfosByText("Pay")
-                                        .firstOrNull { it.text == "Pay" } ?: return
+                                val button = getPayboxItem(event, arrayOf("Pay", "תשלום"))
+                                {e, t -> e.source?.findAccessibilityNodeInfosByText(t)?.firstOrNull { it.text == t } } ?: return
                                 button.performAction(AccessibilityNodeInfo.ACTION_CLICK)
 
                                 payInfo.stage = PayStage.WAITING_FOR_SEARCH_BTN
@@ -220,10 +225,9 @@ class MyAccessibilityService : AccessibilityService() {
                                 if (frame.className != "android.widget.FrameLayout") {
                                     return
                                 }
-
-                                val searchField = frame.getChildByClassAndDesc("android.widget.TextView", "Search button") ?: return
+                                val searchField = getPayboxItem(event, arrayOf("Search button", "כפתור חיפוש"))
+                                {e, t -> e.source?.getChildByClassAndDesc("android.widget.TextView", t)} ?: return
                                 searchField.performAction(AccessibilityNodeInfo.ACTION_CLICK)
-
 
                                 payInfo.stage = PayStage.WAITING_FOR_SEARCH_EDIT
                                 g_payInfo = payInfo
@@ -234,7 +238,8 @@ class MyAccessibilityService : AccessibilityService() {
                                     return
                                 }
 
-                                val searchFieldContainer = frame.getChildByClassAndDesc("android.widget.FrameLayout", "Search button") ?: return
+                                val searchFieldContainer = getPayboxItem(event, arrayOf("Search button", "כפתור חיפוש"))
+                                {e, t -> e.source?.getChildByClassAndDesc("android.widget.FrameLayout", t)} ?: return
                                 val searchField = searchFieldContainer.getChildByClass("android.widget.EditText") ?: return
 
                                 val mappedContactName = this.contactMap?.getString(payInfo.target, null) ?: payInfo.target
@@ -248,20 +253,26 @@ class MyAccessibilityService : AccessibilityService() {
                             }
                             PayStage.WAITING_FOR_SELECTED -> {
                                 val frame = event.source ?: return
-                                val giftText = frame.findAccessibilityNodeInfosByText("Is this a gift?")
-                                        .firstOrNull { it.text == "Is this a gift?" } ?: return
+                                val giftText = getPayboxItem(event, arrayOf("Is this a gift?", "לעטוף לך למתנה?"))
+                                {e, t -> e.source?.findAccessibilityNodeInfosByText(t)?.firstOrNull { it.text == t }} ?: return
 
                                 val payLabel = giftText.parent.getChild(0)?.text ?: return
-                                if (!payLabel.startsWith("Pay ")) {
+                                var newTarget: String? = null
+                                for (prefix in arrayOf("Pay ", "תשלום ל")) {
+                                    if (payLabel.startsWith(prefix)) {
+                                        newTarget = payLabel.removePrefix(prefix).toString()
+                                    }
+                                }
+                                if (newTarget == null) {
                                     return
                                 }
 
-                                val newTarget = payLabel.removePrefix("Pay ")
                                 this.contactMap?.edit()?.apply {
-                                    putString(payInfo.target, newTarget.toString())
+                                    putString(payInfo.target, newTarget)
                                 }?.apply()
 
-                                val keyboard = frame.getChildByClassAndDesc("android.widget.LinearLayout", "Numeric Keyboard") ?: return
+                                val keyboard = getPayboxItem(event, arrayOf("Numeric Keyboard", "מקלדת ספרות"))
+                                {e, t -> e.source?.getChildByClassAndDesc("android.widget.LinearLayout", t)} ?: return
 
                                 val keys = (0..9).map { digit ->
                                     keyboard.findAccessibilityNodeInfosByText(digit.toString()).firstOrNull() ?: return
