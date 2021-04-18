@@ -162,10 +162,9 @@ val AccessibilityNodeInfo.children: Sequence<AccessibilityNodeInfo>
     }
 
 private fun getPayboxItem(event: AccessibilityEvent, strings: Array<String>, getter: (AccessibilityEvent, String) -> AccessibilityNodeInfo?) : AccessibilityNodeInfo? {
-    for (text in strings) {
-        return getter(event, text) ?: continue
-    }
-    return null
+    return strings.mapNotNull {
+        getter(event, it)
+    }.firstOrNull()
 }
 
 class MyAccessibilityService : AccessibilityService() {
